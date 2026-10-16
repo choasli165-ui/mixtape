@@ -1,0 +1,54 @@
+# Dependencies & tool caches
+node_modules/
+desktop/.build/
+.npm/
+
+# Build outputs (rebuild with installer/build.sh and installer/package.py)
+release/
+installer/dist/
+installer/setup/uninstall.exe
+installer/**/*.syso
+*.exe
+*.zip
+
+# Local AI engine (downloaded at runtime; never commit model weights)
+engine/
+*.onnx
+*.onnx.data
+*.node
+*.dll
+
+# Personal data: your own song list and anything from ~/.mixtape-agent
+data/my-songs.json
+.mixtape-agent/
+config.json
+soundcloud-client-id.json
+library.json
+
+# Audio (music is never part of this repository)
+*.mp3
+*.wav
+*.flac
+*.m4a
+*.aac
+*.ogg
+*.opus
+*.webm
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Logs written by the Windows helper scripts
+*.log
+*-log.txt
+desktop/install-result.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

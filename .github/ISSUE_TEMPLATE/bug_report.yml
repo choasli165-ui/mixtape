@@ -1,0 +1,62 @@
+name: Bug report
+description: Something doesn't work the way the docs say it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time! Please check [Troubleshooting](../blob/main/docs/troubleshooting.md) first.
+        **Never paste API keys, tokens or your config.json.** Mask them like `sk-…abcd`.
+  - type: input
+    id: version
+    attributes:
+      label: Mixtape version
+      description: Settings dialog footer, `package.json`, or the installer file name.
+      placeholder: 1.5.3
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How do you run Mixtape?
+      options:
+        - Windows installer (Mixtape-Setup.exe)
+        - Desktop app built with desktop/build-desktop.mjs
+        - Browser (node bin/mixtape.js)
+        - From Claude (MCP)
+        - Terminal commands
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Playback / SoundCloud / search
+        - AI playlists (Claude CLI / Custom API)
+        - Liked songs / offline cache
+        - Creation Mode – Studio / Mashup
+        - Creation Mode – DJ
+        - Sing Mode
+        - Installer / desktop app
+        - Languages / UI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+      placeholder: Steps to reproduce, what you saw, what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: Windows version, Node.js version (`node -v`), GPU (for stem separation), proxy in use (yes/no), LLM provider.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output of `node bin/mixtape.js doctor`
+      render: text

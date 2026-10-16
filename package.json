@@ -1,0 +1,27 @@
+{
+  "name": "mixtape-agent",
+  "version": "1.6.1",
+  "description": "AI music player agent: an LLM curates 15-track SoundCloud playlists from a mood or description. Runs standalone or as an MCP server driven by Claude.",
+  "type": "module",
+  "bin": {
+    "mixtape": "bin/mixtape.js"
+  },
+  "scripts": {
+    "start": "node bin/mixtape.js serve",
+    "mcp": "node bin/mixtape.js mcp",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/choasli165-ui/mixtape.git"
+  },
+  "bugs": {
+    "url": "https://github.com/choasli165-ui/mixtape/issues"
+  },
+  "homepage": "https://github.com/choasli165-ui/mixtape#readme"
+}

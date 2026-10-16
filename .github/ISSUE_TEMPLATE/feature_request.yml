@@ -1,0 +1,21 @@
+name: Feature idea
+description: Suggest an improvement or a new creative tool.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would you like to do?
+      description: Describe the situation or the sound you're after, not only the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Platform rules
+      options:
+        - label: This idea doesn't require ripping, redistributing or permanently storing other people's music.

@@ -1,0 +1,38 @@
+{
+  "title": "My Songs",
+  "description": "A small starter list. Replace it with your own songs (see docs/configuration.md#my-songs).",
+  "tracks": [
+    {
+      "artist": "Lakey Inspired",
+      "title": "Better Days"
+    },
+    {
+      "artist": "Kevin MacLeod",
+      "title": "Monkeys Spinning Monkeys"
+    },
+    {
+      "artist": "Joakim Karud",
+      "title": "Dreams"
+    },
+    {
+      "artist": "Scott Buckley",
+      "title": "Snowfall"
+    },
+    {
+      "artist": "Broke For Free",
+      "title": "Night Owl"
+    },
+    {
+      "artist": "Ikson",
+      "title": "Anywhere"
+    },
+    {
+      "artist": "Chris Zabriskie",
+      "title": "Divider"
+    },
+    {
+      "artist": "Kevin MacLeod",
+      "title": "Sneaky Snitch"
+    }
+  ]
+}

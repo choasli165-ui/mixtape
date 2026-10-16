@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mixtape</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/create/create.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="reel"></span><span class="reel"></span><b>mixtape</b></div>
+      <button class="new-mix" id="newMixBtn" title="Describe a mood and get a fresh 15-song mix"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/></svg>Surprise Me</button>
+      <button class="create-btn" id="createBtn" title="See the parts of a song, change them, mash songs up, DJ"><svg viewBox="0 0 24 24"><path d="M4 20 15 9M14 4l1.5 3L19 8.5 15.5 10 14 13l-1.5-3L9 8.5 12.5 7zM19 14l.8 1.7 1.7.8-1.7.8L19 19l-.8-1.7-1.7-.8 1.7-.8z"/></svg>Creation Mode</button>
+      <button class="create-btn sing-btn" id="singBtn" title="Sing along with live pitch correction and effects"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Sing Mode</button>
+      <form class="side-search" id="searchForm" role="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="searchInput" type="search" placeholder="Search songs or artists" autocomplete="off" spellcheck="false">
+      </form>
+      <nav>
+        <div class="nav-label">Library</div>
+        <ul id="playlistNav"></ul>
+      </nav>
+      <button class="settings-btn" id="settingsBtn" title="LLM &amp; SoundCloud settings">
+        <span class="dot" id="llmDot"></span><span id="llmLabel">Settings</span>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </aside>
+
+    <main class="main" id="main">
+      <!-- Compose view -->
+      <section class="view compose" id="composeView">
+        <h1>What do you want to hear?</h1>
+        <p class="sub">Describe a genre, a mood, a moment, or a few artists. The agent searches SoundCloud and curates 15 tracks.</p>
+        <form id="composeForm" class="compose-box">
+          <textarea id="promptInput" rows="3" placeholder="e.g. rainy Sunday morning, warm jazzy lo-fi with a bit of vinyl crackle" maxlength="500"></textarea>
+          <div class="compose-row">
+            <div class="chips" id="chips"></div>
+            <button type="submit" class="primary" id="generateBtn">Make the mix</button>
+          </div>
+        </form>
+        <div class="progress hidden" id="progress">
+          <div class="progress-head"><span class="spinner"></span><span id="progressTitle">Curating…</span></div>
+          <ol id="progressLog"></ol>
+        </div>
+      </section>
+
+      <!-- Playlist view -->
+      <section class="view playlist hidden" id="playlistView">
+        <header class="pl-head">
+          <div class="cover" id="plCover"></div>
+          <div class="pl-meta">
+            <div class="eyebrow" id="plEyebrow">Playlist</div>
+            <h1 id="plTitle" spellcheck="false"></h1>
+            <p id="plDesc"></p>
+            <p class="prompt" id="plPrompt"></p>
+            <div class="pl-actions">
+              <button class="primary round" id="plPlay" title="Play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+              <button class="ghost" id="plShuffle"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle play</button>
+              <button class="ghost" id="plRegen" title="Make a new mix from the same request"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg><span>Remix</span></button>
+              <button class="ghost danger" id="plDelete" title="Delete playlist"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>
+            </div>
+          </div>
+        </header>
+        <div class="tracks" id="trackList"></div>
+        <div class="empty hidden" id="emptyLiked">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.2 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.8 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z"/></svg>
+          <p>Songs you heart show up here.</p>
+        </div>
+        <div class="empty hidden" id="emptyInspirations">
+          <svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></svg>
+          <p>Nothing here yet. When you save a version in Creation Mode (Studio, Mashup, DJ or Sing), it appears here automatically.</p>
+          <button class="ghost" id="inspGo">Open Creation Mode</button>
+        </div>
+      </section>
+      <section class="view search hidden" id="searchView">
+        <div class="eyebrow">Search</div>
+        <h1 id="searchTitle" data-notr></h1>
+        <div class="search-artists" id="searchArtists"></div>
+        <div class="search-status" id="searchStatus"></div>
+        <div class="search-group" id="searchLibGroup"><h3>In your library</h3><div class="tracks" id="searchLib"></div></div>
+        <div class="search-group" id="searchScGroup"><h3>On SoundCloud</h3><div class="tracks" id="searchSc"></div></div>
+      </section>
+      <section class="view artist hidden" id="artistView">
+        <header class="ar-head">
+          <div class="ar-avatar" id="arAvatar"></div>
+          <div class="ar-meta">
+            <div class="eyebrow">Artist on SoundCloud</div>
+            <h1 id="arName" data-notr></h1>
+            <p class="ar-sub" id="arSub"></p>
+            <div class="pl-actions">
+              <button class="primary round" id="arPlay" title="Play" disabled><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+              <button class="ghost" id="arShuffle" disabled><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle play</button>
+              <a class="ghost" id="arOpen" target="_blank" rel="noopener">Open on SoundCloud ↗</a>
+            </div>
+          </div>
+        </header>
+        <div class="ar-alias hidden" id="arAlias"></div>
+        <div class="search-status" id="arStatus"></div>
+        <div class="tracks" id="arTracks"></div>
+      </section>
+      <section class="view create hidden" id="createView"></section>
+    </main>
+
+    <footer class="player" id="player">
+      <div class="np">
+        <div class="np-art" id="npArt"></div>
+        <div class="np-text">
+          <div class="np-title" id="npTitle">Nothing playing</div>
+          <a class="np-artist" id="npArtist" role="button" tabindex="0"></a>
+        </div>
+        <button class="icon heart" id="npLike" title="Add to Liked Songs (L)" disabled><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.3 3.2 4.5 7 4.5c2 0 3.6 1.1 5 3 1.4-1.9 3-3 5-3 3.8 0 6 3.8 4.5 7.3C19.5 16.4 12 21 12 21z"/></svg></button>
+      </div>
+      <div class="transport">
+        <div class="buttons">
+          <button class="icon" id="shuffleBtn" title="Shuffle"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+          <button class="icon" id="prevBtn" title="Previous (Shift+←)"><svg viewBox="0 0 24 24"><path d="M19 20 9 12l10-8zM5 19V5"/></svg></button>
+          <button class="play" id="playBtn" title="Play/Pause (Space)"><svg viewBox="0 0 24 24" class="i-play"><path d="M8 5v14l11-7z"/></svg><svg viewBox="0 0 24 24" class="i-pause"><path d="M7 5h3v14H7zM14 5h3v14h-3z"/></svg><span class="buffering"></span></button>
+          <button class="icon" id="nextBtn" title="Next (Shift+→)"><svg viewBox="0 0 24 24"><path d="m5 4 10 8-10 8zM19 5v14"/></svg></button>
+          <button class="icon" id="repeatBtn" title="Repeat"><svg viewBox="0 0 24 24"><path d="m17 2 4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg><span class="one">1</span></button>
+        </div>
+        <div class="seek">
+          <span id="curTime">0:00</span>
+          <input type="range" id="seekBar" min="0" max="1000" value="0" aria-label="Seek">
+          <span id="durTime">0:00</span>
+        </div>
+      </div>
+      <div class="extras">
+        <button class="np-create" id="npCreate" title="Open this song in Creation Mode"><svg viewBox="0 0 24 24"><path d="M4 20 15 9M14 4l1.5 3L19 8.5 15.5 10 14 13l-1.5-3L9 8.5 12.5 7z"/></svg>Create</button>
+        <a class="sc-link" id="scLink" target="_blank" rel="noopener" title="Open on SoundCloud">SoundCloud ↗</a>
+        <svg viewBox="0 0 24 24" class="vol-icon"><path d="M11 5 6 9H2v6h4l5 4zM15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>
+        <input type="range" id="volBar" min="0" max="100" value="80" aria-label="Volume">
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <div class="add-menu hidden" id="addMenu"></div>
+
+  <dialog id="settings">
+    <form method="dialog" class="settings-form" id="settingsForm">
+      <h2>Settings</h2>
+      <label class="lang-row">Language<select id="langSelect" data-notr></select></label>
+      <h3 class="set-sub">AI curator</h3>
+      <p class="sub">The LLM plans SoundCloud searches and picks the 15 tracks. Claude CLI is the default and uses your existing Claude login.</p>
+      <fieldset class="providers">
+        <label><input type="radio" name="provider" value="claude-cli"><span><b>Claude CLI</b><small>Runs Claude Code on this PC. No key needed.</small></span></label>
+        <label><input type="radio" name="provider" value="custom"><span><b>Custom API</b><small>Connect any compatible AI service or local model server by entering its address.</small></span></label>
+      </fieldset>
+      <div class="pfields" data-for="claude-cli">
+        <label>Command<input name="claudeCli.command" placeholder="claude"></label>
+        <label>Model <small>(optional: sonnet, opus, haiku…)</small><input name="claudeCli.model" placeholder="CLI default"></label>
+      </div>
+      <div class="pfields" data-for="custom">
+        <label>Quick setup <small>(fills in the address and format)</small><select id="apiPreset"></select></label>
+        <label>API endpoint URL<input id="apiUrl" placeholder="https://api.example.com/v1" autocomplete="off" spellcheck="false" data-notr></label>
+        <label>API format<select id="apiFormat"><option value="openai">OpenAI-compatible (Chat Completions)</option><option value="anthropic">Anthropic (Messages)</option></select></label>
+        <label>Model<input id="apiModel" placeholder="model name" autocomplete="off" spellcheck="false"></label>
+        <label>API key <small>(blank for local servers)</small><input id="apiKey" type="password" autocomplete="off"></label>
+      </div>
+      <h3 class="set-sub">Creation Mode</h3>
+      <label class="lang-row">Song-splitting AI runs on<select id="aiDevice"><option value="auto">Graphics card (falls back to processor)</option><option value="cpu">Processor only</option></select></label>
+      <label class="lang-row hidden" id="aiGpuRow">Graphics card<select id="aiGpuSel"></select></label>
+      <div class="gpu-status" id="aiGpuStatus"></div>
+      <p class="sub small-note" id="aiNote">Runs locally on this PC with ONNX Runtime and DirectML (any DirectX 12 graphics card: NVIDIA, AMD or Intel). No CUDA and no online AI service needed.</p>
+      <details>
+        <summary>SoundCloud</summary>
+        <label>client_id <small>(optional — auto-discovered when empty)</small><input name="soundcloud.clientId" autocomplete="off"></label>
+      </details>
+      <div class="test-result" id="testResult"></div>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" id="testLlm">Save &amp; test</button>
+        <span class="spacer"></span>
+        <button value="cancel" class="ghost">Close</button>
+        <button type="button" class="primary" id="saveSettings">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <audio id="audio" preload="auto" crossorigin="anonymous"></audio>
+  <div id="widgetHost" aria-hidden="true"></div>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.20/dist/hls.light.min.js" defer></script>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
