@@ -9,6 +9,7 @@ All notable changes to Mixtape. The format follows [Keep a Changelog](https://ke
 - Reject opaque and cross-origin browser requests to the local API, with an HTTP regression test. Same-origin desktop/browser requests and CLI/MCP clients remain supported.
 - Build distribution packages from a clean application tree, excluding personal data, stale app files and implicitly bundled AI engines.
 - Include Mixtape's license, third-party notices and the Go runtime license in desktop distributions.
+- Run tests consistently on Windows and Unix, including Node.js 20, without shell wildcard expansion.
 
 ### Changed
 - Upgrade the Windows desktop runtime to Electron 44.8.0.

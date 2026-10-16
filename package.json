@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node bin/mixtape.js serve",
     "mcp": "node bin/mixtape.js mcp",
-    "test": "node --test test/*.test.js"
+    "test": "node scripts/test.mjs"
   },
   "engines": {
     "node": ">=20"
