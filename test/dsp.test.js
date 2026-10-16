@@ -8,6 +8,8 @@ import { renderNotes, INSTRUMENTS } from '../public/dsp/synth.js';
 
 const SR = 44100;
 const sine = (f, sec, a = 0.5) => Float32Array.from({ length: Math.round(sec * SR) }, (_, i) => a * Math.sin((2 * Math.PI * f * i) / SR));
+// Repeatable noise, matching the Park–Miller generator used by tune.test.js.
+const seededRandom = (seed = 7) => () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
 /** Dominant frequency via FFT of the middle of the signal. */
 function domFreq(x) {
@@ -21,7 +23,7 @@ function domFreq(x) {
 }
 
 test('fft round trip', () => {
-  const re = Float64Array.from({ length: 1024 }, () => Math.random()), im = new Float64Array(1024);
+  const re = Float64Array.from({ length: 1024 }, seededRandom()), im = new Float64Array(1024);
   const orig = Float64Array.from(re);
   fft(re, im); fft(re, im, true);
   for (let i = 0; i < 1024; i++) assert.ok(Math.abs(re[i] - orig[i]) < 1e-9);
@@ -118,7 +120,10 @@ test('melody extraction: notes of a simple tune', () => {
   assert.equal(bassNotes[0]?.midi, 33);
 });
 
-test('every instrument renders audible, unclipped audio at the right pitch', () => {
+test('every instrument renders audible, unclipped audio at the right pitch', (t) => {
+  // Random pluck excitation can make a high harmonic dominate the pitch probe.
+  // Fix the excitation and oscillator phases; the test context restores Math.random.
+  t.mock.method(Math, 'random', seededRandom());
   for (const name of Object.keys(INSTRUMENTS)) {
     const [L, R] = renderNotes([{ start: 0.1, dur: 0.8, midi: 57, vel: 0.9 }], name, SR, SR * 2);
     const peak = Math.max(...L.map(Math.abs));
