@@ -42,7 +42,12 @@ before(async () => {
   base = await mods.server.listen(server, { host: '127.0.0.1', port: 0 });
 });
 
-after(async () => { server?.closeAllConnections?.(); server?.close(); await mock.close(); fs.rmSync(HOME, { recursive: true, force: true }); });
+after(async () => {
+  server?.closeAllConnections?.();
+  if (server) await new Promise((resolve) => server.close(resolve));
+  await mock.close();
+  await fs.promises.rm(HOME, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+});
 
 const j = async (method, p, body, headers = {}) => {
   const r = await fetch(base + p, { method, headers: { 'content-type': 'application/json', ...headers }, body: body ? JSON.stringify(body) : undefined });

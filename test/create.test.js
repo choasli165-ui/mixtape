@@ -26,7 +26,12 @@ before(async () => {
   server = createServer(new App());
   base = await listen(server, { host: '127.0.0.1', port: 0 });
 });
-after(async () => { server?.closeAllConnections?.(); server?.close(); await mock.close(); fs.rmSync(HOME, { recursive: true, force: true }); });
+after(async () => {
+  server?.closeAllConnections?.();
+  if (server) await new Promise((resolve) => server.close(resolve));
+  await mock.close();
+  await fs.promises.rm(HOME, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+});
 
 function readWav(file) {
   const b = fs.readFileSync(file);
@@ -82,6 +87,7 @@ test('separation: overlap-add across chunks reproduces the stems exactly', async
   assert.equal(info.ready, true);
   const wav = await fetch(base + info.urls.vocals);
   assert.equal(wav.headers.get('content-type'), 'audio/wav');
+  assert.equal((await wav.arrayBuffer()).byteLength, 44 + frames * 4);
   assert.equal((await fetch(base + '/api/create/stems/777/evil.wav')).status, 404);
   assert.equal((await (await fetch(base + '/api/create/stems/999')).json()).ready, false);
 });
