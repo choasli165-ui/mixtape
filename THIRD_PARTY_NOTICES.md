@@ -33,3 +33,10 @@ Mixtape does **not** redistribute the model weights in this repository. If you b
 * The DJ sampler sounds (air horn, siren, laser, 808, clap, riser, impact, downlifter) are **synthesised in code** (`public/dsp/dj-sounds.js`). No sample files are used.
 * Tests use synthetic tones generated in code. No music files are included.
 * `data/my-songs.example.json` lists only artist names and song titles, as search terms, and contains no audio.
+
+## License scope
+
+This license covers Mixtape's own source code only. It does not grant any
+rights to music, recordings or other content you access with Mixtape, nor to
+third-party services, software or AI models it connects to or downloads.
+See DISCLAIMER.md and THIRD_PARTY_NOTICES.md.
